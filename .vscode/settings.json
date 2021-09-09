@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.vue": "html",
+        "cmath": "cpp",
+        "iostream": "cpp"
+    }
+}
