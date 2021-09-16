@@ -6,7 +6,11 @@ using namespace std;
 int main() {
 	double a, b, c;
     cout << "enter three numbers \"a\", \"b\" and \"c\" - for equation ax^2 + bx + c = 0" << endl;
-    cin >> a >> b >> c;
+    while(!(cin >> a >> b >> c)){
+        cout << "enter three numbers" << endl;
+        cin.clear();
+        cin.ignore(INT_MAX, '\n');
+    }
     cout << "answer: "; 
     if(a != 0){
         double d = b*b - 4*a*c;
