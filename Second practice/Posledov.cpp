@@ -8,16 +8,27 @@ using namespace std;
 
 int main() {
     double N;
-    cout << "enter one natural number" << endl;
-    while(!(cin >> N) || N < 1 || N-(int)N != 0){
-        cout << "enter one natural number" << endl;
+    cout << "enter one number" << endl;
+    while(!(cin >> N)){
+        cout << "enter one number" << endl;
         cin.clear();
         cin.ignore(INT_MAX, '\n');
     }
-    for(int i = 0; i < 10; i++){
-        cout << N << " ";
-        N++;
+    if(N < 1){
+        for(int i = 1; i <= 10; i++){
+            cout << i << endl;
+        }
         cout << endl;
+    }
+    else{
+        if(N - (int)N > 0){
+            int t = (int)N + 1;
+            for(int i = 0; i < 10; i++) cout << t + i << endl;
+        }
+        else{
+            int t = (int)N;
+            for(int i = 0; i < 10; i++) cout << t + i << endl;
+        }
     }
 	return 0;
 }

@@ -14,7 +14,7 @@ int main() {
         cin.clear();
         cin.ignore(INT_MAX, '\n');
     }
-    if(b < y || b < x) {
+    if(b <= y || b < x) {
         cout << "there are no such Z" << endl;
         return 0;
     }
