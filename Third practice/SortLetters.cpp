@@ -3,6 +3,7 @@
 #include <cmath>
 #include <windows.h>
 #include <locale.h>
+#include <string>
 
 using namespace std;
 
@@ -12,8 +13,11 @@ int main() {
     getline(cin, s);
     string nabor = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz";
     string fin = "";
-    for(int i = 0; i < s.size(); i++){
-
+    for(int i = 0; i < nabor.size(); i++){
+        for(int j = 0; j < s.size(); j++){
+            if(s[j] == nabor[i]) fin += s[j];
+        }
     }
+    cout << fin << endl;
 	return 0;
 }
