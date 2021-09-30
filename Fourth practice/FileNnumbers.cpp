@@ -8,16 +8,20 @@
 using namespace std;
 
 int main() {
-    ifstream fin;
-    ofstream fout ("FileFile.txt");
-    fout << "some random text" << endl;
-    fout << "some random text again" << endl;
-    fin.open("FileFile.txt");
-    char c;
-    while(!fin.eof()){
-        fin.get(c);
-        cout << c;
+    
+    ofstream fout ("Filenums.txt");
+    for(int i = 0; i < 10; i++){
+        fout << 1+2*i << endl;
     }
+    ifstream fin;
+    fin.open("Filenums.txt");
+    int s = 0;
+    while(!fin.eof()){
+        int t = 0;
+        fin >> t;
+        s += t;
+    }
+    cout << s << endl;
     fout.close();
     fin.close();
 	return 0;
