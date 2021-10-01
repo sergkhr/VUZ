@@ -11,7 +11,7 @@ int main() {
     cout << "enter a string consisting of latin letters" << endl;
     string s;
     getline(cin, s);
-    string nabor = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz";
+    string nabor = " AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz";
     string fin = "";
     for(int i = 0; i < nabor.size(); i++){
         for(int j = 0; j < s.size(); j++){

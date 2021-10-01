@@ -13,10 +13,17 @@ int main() {
     fout << "some random text" << endl;
     fout << "some random text again" << endl;
     fin.open("FileFile.txt");
-    char c;
-    while(!fin.eof()){
-        fin.get(c);
-        cout << c;
+    if(fin.is_open()){
+        char c;
+        string s;
+        while(!fin.eof()){
+            //fin.get(c);
+            //cout << c;
+            getline(fin, s);
+            cout << s << endl;
+        }
+
+
     }
     fout.close();
     fin.close();

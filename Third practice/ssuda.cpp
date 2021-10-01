@@ -7,7 +7,7 @@
 using namespace std;
 
 int main() {
-    cout << "enter three positive numbers: S, p, n" << endl;
+    cout << "enter three positive numbers: S, m, n" << endl;
     double S, m, n;
     while(!(cin >> S >> m >> n) || S < 0 || m < 0 || n < 0)
     {
@@ -15,9 +15,9 @@ int main() {
         cin.clear();
         cin.ignore(INT_MAX, '\n');
     }
-    
+
     double p = 0;
-    int precision = -2;
+    int precision = -4;
     double sdvig = 1000;
     double mcheck;
     bool movePlus = true;
@@ -36,9 +36,9 @@ int main() {
             movePlus = !movePlus;
             sdvig /= -10;
         }
-        
+
     }
     cout << p << endl;
-    
+
 	return 0;
 }
