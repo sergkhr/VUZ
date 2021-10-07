@@ -4,6 +4,7 @@
 #include <windows.h>
 #include <locale.h>
 #include <fstream>
+#include <string>
 
 using namespace std;
 
@@ -20,6 +21,8 @@ int main() {
     string s = "";
     bool strGood = true;
     do{
+        a = "";
+        s = "";
         cout << "enter the string" << endl;
         strGood = true;
         getline(cin, a);
@@ -30,29 +33,30 @@ int main() {
         //проверка корректности строки
         //все символы хороши
         for(int i = 0; i < s.size() && strGood; i++){
-            if(sC.find(s[i]) == -1) strGood = false;
+            if(sC.find(s[i]) == -1){ strGood = false; cout << "there are some unidentified symbols, please use only M, D, C, L, X, V and I symbols" << endl;}
         }
 
         //врем строка убираю вычитание
         string tmpS = "";
-        for(int i = 0; i < s.size()-1 && strGood; i++){
-            if(sC.find(s[i+1]) < 6 && sC.find(s[i+1]) + 2 - sC.find(s[i+1])%2 == sC.find(s[i])){
+        for(int i = 0; i < s.size() && strGood; i++){
+            if(i!= s.size()-1 && sC.find(s[i+1]) < 6 && sC.find(s[i+1]) + 2 - sC.find(s[i+1])%2 == sC.find(s[i])){
                 tmpS += s[i+1];
                 i++;
             }
-            else if(i == s.size()-1){
-                    tmpS += s[i];
-                    tmpS += s[i+1];
-            }
+            // else if(i == s.size()-1){
+            //         tmpS += s[i];
+            //         tmpS += s[i+1];
+            // }
             else tmpS += s[i];
         }
+        //cout << tmpS << endl;
         //следование символов и кол-во
         int podr = 1;
         for(int i = 1; i < tmpS.size() && strGood; i++){
-            if(sC.find(s[i]) < sC.find(s[i-1])) strGood = false;
-            if(s[i] == s[i-1]) podr++;
+            if(sC.find(tmpS[i]) < sC.find(tmpS[i-1])){ strGood = false; cout << "check the order of symbols" << endl;}
+            if(tmpS[i] == tmpS[i-1]) podr++;
             else podr = 1;
-            if(podr > 3) strGood = false;
+            if(podr > 3){ strGood = false; cout << "check the number of symbols standing in a row" << endl;}
         }
 
 
@@ -66,7 +70,35 @@ int main() {
     int sum = 0;
     for(int i = 0; i < s.size(); i++){
         string tmpc = "";
-        tmpc += s[i];
+        int ind;
+        if(i != s.size()-1){
+            tmpc = "";
+            tmpc += s[i];
+            tmpc += s[i+1];
+            ind = findSM(cifr, nc, tmpc);
+            if(ind == -1){
+                tmpc = "";
+                tmpc += s[i];
+                ind = findSM(cifr, nc, tmpc);
+                if(ind == -1){
+                    cout << "strange stuff happened 1 " << i << tmpc <<endl;
+                    return 0;
+                }
+            }
+            else i++;
+        }
+        else{
+            tmpc = "";
+            tmpc += s[i];
+            ind = findSM(cifr, nc, tmpc);
+            if(ind == -1){
+                cout << "strange stuff happened 2 " << i << tmpc <<endl;
+                return 0;
+            }
+        }
+
+
+        /*tmpc += s[i];
         int ind = findSM(cifr, nc, tmpc);
         if(ind == -1){
             if(i != s.size()-1){
@@ -82,7 +114,9 @@ int main() {
                 cout << "strange stuff happened" <<endl;
                 return 0;
             }
-        }
+        }*/
+
+
         sum += cifrDec[ind];
     }
     cout << sum << endl;

@@ -3,6 +3,7 @@
         "*.vue": "html",
         "cmath": "cpp",
         "iostream": "cpp",
-        "iosfwd": "cpp"
+        "iosfwd": "cpp",
+        "ostream": "cpp"
     }
 }
