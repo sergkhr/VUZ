@@ -62,6 +62,8 @@ int main() {
         cout << endl;
     }
 
+
+
     //1 задание
     double bigInc = -1;
     for(int i = 0; i < prod; i++){
