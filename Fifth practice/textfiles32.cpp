@@ -11,7 +11,7 @@
 using namespace std;
 
 int main() {
-    cout << -7 % 26 << endl;
+
     ifstream fin("file32.txt");
     string alf = "abcdefghijklmnopqrstuvwxyz";
     //шифр сдвиг в алфавите на n * номер сивола в строке + m
@@ -35,6 +35,8 @@ int main() {
             }
             cout << shifr << endl;
             //why is  it 9 here not -7 (alf.size() = 26)
+            cout << -7 % 26 << endl;
+            cout << alf.size() << endl;
             cout << "!" << -7 % alf.size() << endl;
             for(int i = 0; i < shifr.size(); i++){
                 int ind = alf.find(shifr[i]);
@@ -48,6 +50,6 @@ int main() {
             cout << endl;
         }
     }
-    
+
 	return 0;
 }
