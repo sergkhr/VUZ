@@ -17,7 +17,7 @@ int main() {
     if(a < 2) cout << "no prime numbers" << endl;
     else{
         const int n = (int)a + 1;
-        int mas[n];
+        int *mas = new int[n];
         mas[0] = 0; mas[1] = 0;
         for(int i = 2; i < n; i++) mas[i] = 1;
         for(int i = 2; i < n; i++){
@@ -27,5 +27,6 @@ int main() {
             }
         }
     }
+
 	return 0;
 }

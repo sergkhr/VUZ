@@ -12,9 +12,9 @@ using namespace std;
 
 int main() {
 
-    const int n = 7;
+    const int n = 9;
     const int m = 6;
-    int a[n] = {4, 8, 11, 15, 21, 28, 40};
+    int a[n] = {4, 8, 11, 15, 21, 28, 40, 87, 90};
     int b[m] = {9, 12, 14, 19, 20, 34};
     int c[n+m];
     int i = 0, j = 0;

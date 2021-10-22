@@ -36,8 +36,10 @@ int main() {
             cout << shifr << endl;
             //why is  it 9 here not -7 (alf.size() = 26)
             cout << -7 % 26 << endl;
+            int tmp = alf.size();
             cout << alf.size() << endl;
             cout << "!" << -7 % alf.size() << endl;
+            cout << "!" << -7 % tmp << endl;
             for(int i = 0; i < shifr.size(); i++){
                 int ind = alf.find(shifr[i]);
                 if(ind == -1) cout << shifr[i];

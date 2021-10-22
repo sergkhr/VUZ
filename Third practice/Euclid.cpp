@@ -17,8 +17,10 @@ int main() {
     if(a == 0 && b == 0){
         cout << "well, you are searching for the biggest integer there is, we can't help you";
     }
-    a = max(abs(a), abs(b));
-    b = min(abs(a), abs(b));
+    int ta = a;
+    int tb = b;
+    a = max(abs(ta), abs(tb));
+    b = min(abs(ta), abs(tb));
     while(b != 0){
         int t = a % b;
         a = b;

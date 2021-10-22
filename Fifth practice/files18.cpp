@@ -29,7 +29,7 @@ bool checkstr(string a, string b){ //left string should be first in alphabetic o
 int main() {
     ofstream fout("phone.txt");
     fout << "bra " << 8984627 << endl << "avg " << 876782641 << endl << "hran " << 87657273 << endl
-    << "gran " << 677824212 << endl << "shere " << 78274991 << endl;
+    << "gran " << 677824212 << endl << "shere " << 78274991 << endl << "anton " << 98867123 << endl;
     vector<string> names;
     vector<string> phones;
     string s;
