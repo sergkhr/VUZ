@@ -15,8 +15,21 @@
 using namespace std;
 
 
-void makeMove(vector<vector<vector<int>>> database, vector<vector<int> times, int currentPoint){
+void makeMove(vector<vector<vector<int>>>& database, vector<vector<int>>& times, int currentPoint, int prevRoute){
+    for(int i = 0; i < database[currentPoint].size(); i++){
+        int getThereMin = database[currentPoint][i][1];
+        int getThereMax = database[currentPoint][i][1];
+        if(prevRoute == -1) getThereMax +=  database[currentPoint][i][2]; // adding maximum waiting time
+        else if(prevRoute != database[currentPoint][i][3]) getThereMax += database[currentPoint][i][2] / 2; //change route adding waiting time (/2 is actually not logically correct)
+        if(times[ database[currentPoint][i][0] ][ 1 ] > times[currentPoint][1] + getThereMax){ //new path is more efficient
+            times[ database[currentPoint][i][0] ][ 0 ] = times[currentPoint][0] + getThereMin;
+            times[ database[currentPoint][i][0] ][ 1 ] = times[currentPoint][1] + getThereMax;
+            times[ database[currentPoint][i][0] ][ 2 ] = currentPoint;
 
+            makeMove(database, times, database[currentPoint][i][0], database[currentPoint][i][3]); //recursion if path is more efficient (if it is not, then adding new moves is counterproductive)
+        }    
+    }
+    return;
 }
 
 int main() {
@@ -53,7 +66,7 @@ int main() {
         return 0;
     }
 
-    for(int i = 0; i < routes.size(); i++){
+   /* for(int i = 0; i < routes.size(); i++){
         for(int j = 0; j < routes[i].size(); j++){
             for(int k = 0; k < n; k++){
                 cout << routes[i][j][k] << " ";
@@ -61,29 +74,33 @@ int main() {
             cout << endl;
         }
         cout << "================" << endl;
-    }
+    } */
 
     //now we have our database
 
-    vector<vector<vector<int>>> dotsData(dotsNum); // dotsData[][] 1 - number of a dot; 2 - one change in dots, the vector is data for it; 3 - (0 - number of a dot to where a path goes) (1 - time needed to get there) (3 - number of the route)
+    vector<vector<vector<int>>> dotsData(dotsNum); // dotsData[][] 1 - number of a dot; 2 - one change in dots, the vector is data for it; 3 - (0 - number of a dot to where a path goes) (1 - time needed to get there) (2 - time to wait) (3 - number of the route)
     for(int i = 0; i < routes.size(); i++){
 
         for(int j = 0; j < routes[i].size(); j++){
 
-            vector<int> dotChangeData(3);
+            vector<int> dotChangeData(4);
             if(j < routes[i].size()-1){
-                dotChangeData[0] = routes[i][j+1][0];
+                dotChangeData[0] = routes[i][j+1][0] - 1; // -1 for it to be index
                 dotChangeData[1] = routes[i][j][1] + routes[i][j][2];
-                dotChangeData[2] = i;
-                dotsData[routes[i][j][0]-1].push_back(dotChangeData);
+                dotChangeData[3] = i;
+                if(j >= 1) dotChangeData[2] = routes[i][j-1][2];
+                else dotChangeData[2] = routes[i][j][3];
+                dotsData[routes[i][j][0] - 1].push_back(dotChangeData);
             }
 
 
             if(j >= 1){
-                dotChangeData[0] = routes[i][j-1][0];
+                dotChangeData[0] = routes[i][j-1][0] - 1;
                 dotChangeData[1] = routes[i][j][1] + routes[i][j][3];
-                dotChangeData[2] = i;
-                dotsData[routes[i][j][0]-1].push_back(dotChangeData);
+                dotChangeData[3] = i;
+                if(j < routes[i].size()-1) dotChangeData[2] = routes[i][j+1][3];
+                else dotChangeData[2] = routes[i][j][2];
+                dotsData[routes[i][j][0] - 1].push_back(dotChangeData);
             }
 
 
@@ -92,17 +109,17 @@ int main() {
         }
     }
 
-    for(int i = 0; i < dotsNum; i++){
-        cout << i+1 << ") ";
+  /*  for(int i = 0; i < dotsNum; i++){
+        cout << i << ") ";
         for(int j = 0; j < dotsData[i].size(); j++){
             cout << "(";
-            for(int k = 0; k < 3; k++){
+            for(int k = 0; k < dotsData[i][j].size(); k++){
                 cout <<dotsData[i][j][k] << " ";
             }
             cout << ") ";
         }
         cout << endl;
-    }
+    } */
 
     // now we have both databases
 
@@ -118,7 +135,7 @@ int main() {
     startPoint--; //from 1 to max   became 0 to max for it to be index
     destinationPoint--;
 
-    vector<vector<int>> getToTime(dotsNum, vector<int>(2)); //getToTime[][]    1 - point; 2 -  (0 - min time) (1 - max time)
+    vector<vector<int>> getToTime(dotsNum, vector<int>(3)); //getToTime[][]    1 - point; 2 -  (0 - min time) (1 - max time) (2 - previous point)
     for(int i = 0; i < getToTime.size(); i++){
         for(int j = 0; j < getToTime[i].size(); j++){
             getToTime[i][j] = INT_MAX;
@@ -126,10 +143,30 @@ int main() {
     }
     getToTime[startPoint][0] = 0;
     getToTime[startPoint][1] = 0;
+    getToTime[startPoint][2] = -1;
 
-    makeMove(dotsData, getToTime, startPoint); //actually has to do everything
+    makeMove(dotsData, getToTime, startPoint, -1); //actually has to do everything
 
-    cout << getToTime[destinationPoint][0] << " to " << getToTime[destinationPoint][1] << endl;
+    int reversePoint = destinationPoint;
+    string routeBack = "";
+    while(getToTime[reversePoint][2] != -1){
+        routeBack += " " + to_string(reversePoint + 1);
+        if(getToTime[reversePoint][2] > dotsNum) break;
+        else reversePoint = getToTime[reversePoint][2];
+    }
+    routeBack += " " + to_string(reversePoint + 1);
+    string routeAns = "";
+    string tmp = "";
+    for(int i = routeBack.size()-1; i >= 0; i--){
+        if(routeBack[i] != ' '){
+            tmp = routeBack.substr(i, 1) + tmp;
+        }
+        else{
+            routeAns += tmp + " ";
+            tmp = "";
+        }
+    }
+    cout << getToTime[destinationPoint][0] << " to " << getToTime[destinationPoint][1] << " (" << routeAns << ")" << endl;
 
     return 0;
 }

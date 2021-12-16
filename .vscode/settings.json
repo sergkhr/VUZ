@@ -7,6 +7,7 @@
         "ostream": "cpp",
         "xstring": "cpp",
         "chrono": "cpp",
-        "fstream": "cpp"
+        "fstream": "cpp",
+        "vector": "cpp"
     }
 }
