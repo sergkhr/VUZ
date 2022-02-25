@@ -9,7 +9,11 @@ int main() {
     int n;
     cout << "insert n" << endl;
     cin >> n;
-    int** matr = (int**)malloc(n * n * sizeof(int));
+    int** matr = (int**)malloc(n * sizeof(int*));
+    for(int i = 0; i < n; i++)
+    {
+        matr[i] = (int*)malloc(n * sizeof(int));
+    }
     
     for (int i = 0; i < n; i++)
     {
