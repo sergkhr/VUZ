@@ -80,7 +80,7 @@ int main() {
     for(int i = 0; i < s.size(); i++){
         if(skob.find(s[i]) != -1){
             // skobka
-            if(skob.find(s[i]) % 2 == 0) st.push(s[i]);
+            if(skob.find(s[i]) % 2 == 0) st.push(s[i]); //opening bracket
             else{
                 while(st.top() != skob[skob.find(s[i]) - 1] ){
                     out += st.top();
@@ -93,7 +93,7 @@ int main() {
         else if((acthigh.find(s[i]) != -1 || actlow.find(s[i]) != -1) && (s[i] != '-' || s[i+1] == ' ') ){
             //znak
             if(actlow.find(s[i]) != -1){
-                //cout << "hoba1" << endl;
+                //lower priority action
                 while(true){
                     if( !st.empty() && (acthigh.find(st.top()) != -1 || actlow.find(st.top()) != -1) ){
                         out += st.top();
@@ -150,8 +150,7 @@ int main() {
     double second = 0;
     for(int i = 0; i < out.size(); i++){
         if(out[i] == ' '){
-            if(tmp != "+" && tmp != "-" && tmp != "*" && tmp != "/"){
-                //number
+            if(tmp != "+" && tmp != "-" && tmp != "*" && tmp != "/"){ //we found a number -> add to stack
                 //cout << tmp << endl;
                 if(tmp.find('.') != -1) rab.push(stod(tmp));
                 else rab.push(stoi(tmp));
@@ -159,7 +158,7 @@ int main() {
             }
             else{
                 //cout << "hoba" << endl;
-                switch(tmp[0]){
+                switch(tmp[0]){ //action met -> performing
                     case '+': 
                         second = rab.top();
                         rab.pop();
