@@ -24,7 +24,8 @@ public:
 	Base* getHead();
 	Base* getSubordinateByName(string subName);
 	Base* findInSubTree(string name);
-	void showTree();
+	void showTree(int depth = 0);
+	void showTreeState(int depth = 0);
 };
 
 Base::Base(Base* head, string name)
@@ -34,7 +35,7 @@ Base::Base(Base* head, string name)
 	if(head && tmp->findInSubTree(name)) delete(this); //not creating object if name is occupied
 	
 	this->name = name;
-	state = -1;
+	state = 0;
 	this->head = head;
 	if(head != nullptr)
 	{
@@ -73,7 +74,19 @@ string Base::getName()
 
 void Base::setState(int state)
 {
-	this->state = state;
+	if(this->head)
+	{
+		if(this->head->state)
+		{
+			this->state = state;
+			if(state == 0) for(int i = 0; i < subordinates.size(); i++) subordinates[i]->setState(0);
+		}
+	}
+	else
+	{
+		this->state = state;
+		if(state == 0) for(int i = 0; i < subordinates.size(); i++) subordinates[i]->setState(0);
+	}
 }
 
 int Base::getState()
@@ -102,20 +115,21 @@ Base* Base::getSubordinateByName(string subName)
 	return nullptr;
 }
 
-void Base::showTree()
+void Base::showTree(int depth)
 {
-	if(subordinates.size() > 0)
-	{
-		cout << endl << name;
-		for(int i = 0; i < subordinates.size(); i++)
-		{
-			cout << "  " << subordinates[i]->name;
-		}
-		for(int i = 0; i < subordinates.size(); i++)
-		{
-			subordinates[i]->showTree();
-		}
-	}
+	if(this->head) cout << endl;
+	for(int i = 0; i < depth; i++) cout << "    ";
+	cout << name;
+	for(int i = 0; i < subordinates.size(); i++) subordinates[i]->showTree(depth + 1);	
+}
+
+void Base::showTreeState(int depth)
+{
+	if(this->head) cout << endl;
+	for(int i = 0; i < depth; i++) cout << "    ";
+	if(state) cout << name << " is ready";
+	else cout << name << " is not ready";
+	for(int i = 0; i < subordinates.size(); i++) subordinates[i]->showTreeState(depth + 1);
 }
 
 Base* Base::findInSubTree(string name)
@@ -136,6 +150,26 @@ class Child2 : public Base
 public:
 	Child2(Base* head, string name = "Base_object") : Base(head, name) {}
 };
+class Child3 : public Base
+{
+public:
+	Child3(Base* head, string name = "Base_object") : Base(head, name) {}
+};
+class Child4 : public Base
+{
+public:
+	Child4(Base* head, string name = "Base_object") : Base(head, name) {}
+};
+class Child5 : public Base
+{
+public:
+	Child5(Base* head, string name = "Base_object") : Base(head, name) {}
+};
+class Child6 : public Base
+{
+public:
+	Child6(Base* head, string name = "Base_object") : Base(head, name) {}
+};
 
 
 class Application : public Base
@@ -151,37 +185,67 @@ public:
 
 void Application::buildTree()
 {
-	//ask what to do here, cause we have nothing to work with before the input
-}
-
-void Application::buildTree()
-{
 	string headName;
 	cin >> headName;
 
 	this->setName(headName);
-	string subName;
-	cin >> headName >> subName;
-	//vector<shared_ptr<Child2>> allSubObj; //storing pointers to all the subordinate objects
-	//Base* parent = this;
-	Child2* x = nullptr;
-	while(headName != subName)
+
+	bool flag = true; // true - building tree; false - changing status
+	while(!cin.eof())
 	{
-		Base* tmpHead = this->findInSubTree(headName); //if to make sure we won't create another tree with no access
-		//if(tmpHead) allSubObj.push_back(make_shared<Child2>(tmpHead, subName));
-		//if(tmpHead) shared_ptr<Child2> = make_shared<Child2>(tmpHead, subName);
-		//Base* tmpHead = parent;
-		//if(x && headName == x->getName()) parent = (Base*)x;
-		//x = new Child2(parent, subName);
-		if(tmpHead) x = new Child2(tmpHead, subName);
-		cin >> headName >> subName;
+		cin >> headName;
+		if(flag) // building tree
+		{
+			if(headName == "endtree")
+			{
+				flag = false;
+				continue;
+			}
+			string subName;
+			cin >> subName;
+			int classNum;
+			cin >> classNum;
+			switch(classNum) //choosing class
+			{
+				Base* tmpHead;
+				case 2:
+					tmpHead = this->findInSubTree(headName); //if to make sure we won't create another tree with no access
+					if(tmpHead) new Child2(tmpHead, subName);
+					break;
+				case 3:
+					tmpHead = this->findInSubTree(headName); //if to make sure we won't create another tree with no access
+					if(tmpHead) new Child3(tmpHead, subName);
+					break;
+				case 4:
+					tmpHead = this->findInSubTree(headName); //if to make sure we won't create another tree with no access
+					if(tmpHead) new Child4(tmpHead, subName);
+					break;
+				case 5:
+					tmpHead = this->findInSubTree(headName); //if to make sure we won't create another tree with no access
+					if(tmpHead) new Child5(tmpHead, subName);
+					break;
+				case 6:
+					tmpHead = this->findInSubTree(headName); //if to make sure we won't create another tree with no access
+					if(tmpHead) new Child6(tmpHead, subName);
+					break;
+			}
+		}
+		else //changing status
+		{
+			int newStatus;
+			cin >> newStatus;
+			Base* tmpHead = this->findInSubTree(headName);
+			tmpHead->setState(newStatus);
+		}
 	}
 }
 
 void Application::startApp()
 {
-	cout << getName();
+	cout << "Object tree" << endl;
 	showTree();
+	cout << endl << "The tree of objects and their readiness" << endl;
+	showTreeState();
 }
 
 
