@@ -24,15 +24,17 @@ public:
 	Base* getHead();
 	Base* getSubordinateByName(string subName);
 	Base* findInSubTree(string name);
+	Base* findByName(string name);
 	void showTree(int depth = 0);
 	void showTreeState(int depth = 0);
+	Base* findByPath(string path);
 };
 
 Base::Base(Base* head, string name)
 {
 	Base* tmp = head;
 	if(head) while(tmp->head) tmp = tmp->head; // finding root
-	if(head && tmp->findInSubTree(name)) delete(this); //not creating object if name is occupied
+	//if(head && tmp->findInSubTree(name)) delete(this); //not creating object if name is occupied
 	
 	this->name = name;
 	state = 0;
@@ -144,6 +146,45 @@ Base* Base::findInSubTree(string name)
 	return(nullptr);
 }
 
+Base* Base::findByName(string name)
+{
+	Base* tmp = this;
+	while(tmp->head) tmp = tmp->head; // finding root
+	return(tmp->findInSubTree(name));
+}
+
+Base* Base::findByPath(string path)
+{
+	if(!this || path.empty()) return(nullptr);
+	if(path.substr(0, 2) == "//"){
+		return findByName(path.substr(2));
+	}
+	if(path.substr(0, 1) == "/"){ // / or /sth or /sth/sth
+		int nextSlash = path.substr(1).find("/"); //path.find(1, "/") is not working for some reason
+		Base* tmpRoot = this;
+		while(tmpRoot->head) tmpRoot = tmpRoot->head; // finding root
+
+		if(nextSlash == -1 && path.size() == 1) return tmpRoot; //root
+
+		if(nextSlash == -1) return(tmpRoot->getSubordinateByName(path.substr(1))); // one after root
+
+		Base* tmp = tmpRoot->getSubordinateByName(path.substr(1, nextSlash - 1)); //more than one after root
+		if(!tmp) return(nullptr); //not found
+		return(tmp->findByPath(path.substr(nextSlash + 1)));
+	}
+	else if(path.substr(0, 1) == "."){
+		return(this); // ./sth or .sth is not an option
+	}
+	else{
+		int nextSlash = path.substr(1).find("/"); 
+		if(nextSlash == -1) return(this->getSubordinateByName(path)); // one after our element
+		Base* tmp = this->getSubordinateByName(path.substr(0, nextSlash - 1)); //more than one after our element
+		if(!tmp) return(nullptr); //not found
+		return(tmp->findByPath(path.substr(nextSlash + 1)));
+	}
+
+}
+
 
 class Child2 : public Base
 {
@@ -178,81 +219,107 @@ private:
 	//vector<shared_ptr<Base>> allSubObj;
 public:
 	Application(Base* head, string name = "Base_object") : Base(head, name) {}
-	void buildTree();
+	bool buildTree();
 	void startApp();
+	void errorOut(string headPath);
 };
 
+void Application::errorOut(string headPath)
+{
+	showTree();
+	cout << endl << "The head object " << headPath << " is not found";
+}
 
-void Application::buildTree()
+bool Application::buildTree()
 {
 	string headName;
 	cin >> headName;
 
 	this->setName(headName);
 
-	bool flag = true; // true - building tree; false - changing status
-	while(!cin.eof())
+	cin >> headName;
+	while(headName != "endtree")
 	{
+		string subName;
+		cin >> subName;
+		int classNum;
+		cin >> classNum;
+		//need to remove check for unique as names are no longer unique
+		Base* tmpHead = this->findByPath(headName); //tmpHead nullptr when not found
+		switch(classNum) //choosing class
+		{
+			case 2:
+				if(tmpHead) new Child2(tmpHead, subName);
+				else{
+					errorOut(headName);
+					return false;
+				}
+				break;
+			case 3:
+				if(tmpHead) new Child3(tmpHead, subName);
+				else{
+					errorOut(headName);
+					return false;
+				}
+				break;
+			case 4:
+				if(tmpHead) new Child4(tmpHead, subName);
+				else{
+					errorOut(headName);
+					return false;
+				}
+				break;
+			case 5:
+				if(tmpHead) new Child5(tmpHead, subName);
+				else{
+					errorOut(headName);
+					return false;
+				}
+				break;
+			case 6:
+				if(tmpHead) new Child6(tmpHead, subName);
+				else{
+					errorOut(headName);
+					return false;
+				}
+				break;
+		}
 		cin >> headName;
-		if(flag) // building tree
-		{
-			if(headName == "endtree")
-			{
-				flag = false;
-				continue;
-			}
-			string subName;
-			cin >> subName;
-			int classNum;
-			cin >> classNum;
-			switch(classNum) //choosing class
-			{
-				Base* tmpHead;
-				case 2:
-					tmpHead = this->findInSubTree(headName); //if to make sure we won't create another tree with no access
-					if(tmpHead) new Child2(tmpHead, subName);
-					break;
-				case 3:
-					tmpHead = this->findInSubTree(headName); //if to make sure we won't create another tree with no access
-					if(tmpHead) new Child3(tmpHead, subName);
-					break;
-				case 4:
-					tmpHead = this->findInSubTree(headName); //if to make sure we won't create another tree with no access
-					if(tmpHead) new Child4(tmpHead, subName);
-					break;
-				case 5:
-					tmpHead = this->findInSubTree(headName); //if to make sure we won't create another tree with no access
-					if(tmpHead) new Child5(tmpHead, subName);
-					break;
-				case 6:
-					tmpHead = this->findInSubTree(headName); //if to make sure we won't create another tree with no access
-					if(tmpHead) new Child6(tmpHead, subName);
-					break;
-			}
-		}
-		else //changing status
-		{
-			int newStatus;
-			cin >> newStatus;
-			Base* tmpHead = this->findInSubTree(headName);
-			tmpHead->setState(newStatus);
-		}
 	}
+	return true;
 }
 
 void Application::startApp()
 {
 	cout << "Object tree" << endl;
 	showTree();
-	cout << endl << "The tree of objects and their readiness" << endl;
-	showTreeState();
+	Base* current = this->findByPath("/"); //hey what if start app was called not from root, then just this would be bad
+	string command;
+	string path;
+	cin >> command;
+	while(command != "END"){
+		cin >> path;
+		if(command == "FIND"){
+			Base* tmp = current->findByPath(path);
+			if(!tmp) cout << endl << path << "     Object is not found";
+			else cout << endl << path << "     Object name: " << tmp->getName();
+		}
+		else{ //command is SET (yes this is cheating)
+			Base* tmp = current->findByPath(path);
+			if(!tmp) cout << endl << "Object is not found: " << current->getName() << " " << path;
+			else{
+				current = tmp;
+				cout << endl << "Object is set: " << current->getName();
+			}
+		}
+		cin >> command;
+	}
 }
 
 
 int main()
 {
 	Application app(nullptr);
-	app.buildTree();
-	app.startApp();
+	if(app.buildTree()) app.startApp();
 	return(0);
 }
