@@ -234,9 +234,7 @@ bool Application::buildTree()
 {
 	string headName;
 	cin >> headName;
-
 	this->setName(headName);
-
 	cin >> headName;
 	while(headName != "endtree")
 	{
@@ -246,44 +244,33 @@ bool Application::buildTree()
 		cin >> classNum;
 		//need to remove check for unique as names are no longer unique
 		Base* tmpHead = this->findByPath(headName); //tmpHead nullptr when not found
-		switch(classNum) //choosing class
+		if(tmpHead)
 		{
-			case 2:
-				if(tmpHead) new Child2(tmpHead, subName);
-				else{
-					errorOut(headName);
-					return false;
-				}
-				break;
-			case 3:
-				if(tmpHead) new Child3(tmpHead, subName);
-				else{
-					errorOut(headName);
-					return false;
-				}
-				break;
-			case 4:
-				if(tmpHead) new Child4(tmpHead, subName);
-				else{
-					errorOut(headName);
-					return false;
-				}
-				break;
-			case 5:
-				if(tmpHead) new Child5(tmpHead, subName);
-				else{
-					errorOut(headName);
-					return false;
-				}
-				break;
-			case 6:
-				if(tmpHead) new Child6(tmpHead, subName);
-				else{
-					errorOut(headName);
-					return false;
-				}
-				break;
+			switch(classNum) //choosing class
+			{
+				case 2:
+					new Child2(tmpHead, subName);
+					break;
+				case 3:
+					new Child3(tmpHead, subName);
+					break;
+				case 4:
+					new Child4(tmpHead, subName);
+					break;
+				case 5:
+					new Child5(tmpHead, subName);
+					break;
+				case 6:
+					new Child6(tmpHead, subName);
+					break;
+			}
 		}
+		else
+		{
+			errorOut(headName);
+			return false;
+		}
+		
 		cin >> headName;
 	}
 	return true;
