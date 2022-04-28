@@ -120,7 +120,6 @@ Base* Base::getSubordinateByName(string subName)
 void Base::showTree(int depth)
 {
 	if(this->head) cout << endl;
-	else cout << "Object tree" << endl;
 	for(int i = 0; i < depth; i++) cout << "    ";
 	cout << name;
 	for(int i = 0; i < subordinates.size(); i++) subordinates[i]->showTree(depth + 1);	
@@ -280,6 +279,7 @@ bool Application::buildTree()
 
 void Application::startApp()
 {
+	cout << "Object tree" << endl;
 	showTree();
 	Base* current = this->findByPath("/"); //hey what if start app was called not from root, then just this would be bad
 	string command;

@@ -120,7 +120,6 @@ Base* Base::getSubordinateByName(string subName)
 void Base::showTree(int depth)
 {
 	if(this->head) cout << endl;
-	else cout << "Object tree" << endl;
 	for(int i = 0; i < depth; i++) cout << "    ";
 	cout << name;
 	for(int i = 0; i < subordinates.size(); i++) subordinates[i]->showTree(depth + 1);	
@@ -162,7 +161,7 @@ Base* Base::findByPath(string path)
 	}
 	if(path.substr(0, 1) == "/"){ // / or /sth or /sth/sth
 		//cout << path << endl;
-		int nextSlash = path.find("/", 1); 
+		int nextSlash = path.substr(1).find("/"); //path.find(1, "/") is not working for some reason
 		Base* tmpRoot = this;
 		while(tmpRoot->head) tmpRoot = tmpRoot->head; // finding root
 		//cout << nextSlash << endl;
@@ -170,8 +169,10 @@ Base* Base::findByPath(string path)
 		if(nextSlash == -1 && path.size() == 1) return tmpRoot; //root
 
 		if(nextSlash == -1) return(tmpRoot->getSubordinateByName(path.substr(1))); // one after root
+		nextSlash++; // we did find for a substring => we found index lower by one
 		Base* tmp = tmpRoot->getSubordinateByName(path.substr(1, nextSlash - 1)); //more than one after root
-		return(tmp->findByPath(path.substr(nextSlash + 1))); //if tmp = nullptr then findByPath returns nullptr
+		if(!tmp) return(nullptr); //not found
+		return(tmp->findByPath(path.substr(nextSlash + 1)));
 	}
 	else if(path.substr(0, 1) == "."){
 		if(path.size() == 1) return(this); // just .
@@ -182,6 +183,7 @@ Base* Base::findByPath(string path)
 		int nextSlash = path.find("/"); 
 		if(nextSlash == -1) return(this->getSubordinateByName(path)); // one after our element
 		Base* tmp = this->getSubordinateByName(path.substr(0, nextSlash)); //more than one after our element
+		if(!tmp) return(nullptr); //not found
 		return(tmp->findByPath(path.substr(nextSlash + 1)));
 	}
 
@@ -280,6 +282,7 @@ bool Application::buildTree()
 
 void Application::startApp()
 {
+	cout << "Object tree" << endl;
 	showTree();
 	Base* current = this->findByPath("/"); //hey what if start app was called not from root, then just this would be bad
 	string command;
