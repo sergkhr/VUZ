@@ -6,6 +6,13 @@
 
 using namespace std;
 
+class Base;
+
+typedef void(Base::*TYPE_SIGNAL)(string&);
+typedef void(Base::*TYPE_HANDLER)(string);
+#define SIGNAL_D(signal_f)(TYPE_SIGNAL)(&signal_f)
+#define HANDLER_D(handler_f)(TYPE_HANDLER)(&handler_f)
+
 class Base
 {
 private:
@@ -13,6 +20,11 @@ private:
 	Base* head;
 	int state;
 	vector <Base*> subordinates;
+
+	vector<Base*> receivers;
+	vector<TYPE_SIGNAL> signals; //signal which can be sent to the receiver
+	vector<Base*> senders;
+	vector<TYPE_HANDLER> handlers; //handler which will be used for a signal from a certain sender
 public:
 	Base(Base* head, string name = "Base_object");
 	~Base();
@@ -28,6 +40,8 @@ public:
 	void showTree(int depth = 0);
 	void showTreeState(int depth = 0);
 	Base* findByPath(string path);
+	string getPath();
+	void set_connection(TYPE_SIGNAL signal, Base* destination, TYPE_HANDLER handler);
 };
 
 Base::Base(Base* head, string name)
@@ -187,31 +201,78 @@ Base* Base::findByPath(string path)
 
 }
 
+string Base::getPath()
+{
+	string path = "";
+	Base* tmp = this;
+	while(tmp->head){ // there is a head
+		path += "/" + tmp->name;
+	}
+	path += "/";
+	return path;
+}
+
+
+void Base::set_connection(TYPE_SIGNAL signal, Base* destination, TYPE_HANDLER handler)
+{
+	if(!this || !destination) return;
+	this->receivers.push_back(destination);
+	this->signals.push_back(signal);
+	destination->senders.push_back(this);
+	destination->handlers.push_back(handler);
+}
+
+
 
 class Child2 : public Base
 {
 public:
 	Child2(Base* head, string name = "Base_object") : Base(head, name) {}
+	void signal(string& mes){
+		mes += " (class: 2)";
+		cout << "Signal from " << this->getPath() << endl;
+	}
+	void handler(string mes){cout << "Signal to " << this->getPath() << " Text: " << mes << endl;}
 };
 class Child3 : public Base
 {
 public:
 	Child3(Base* head, string name = "Base_object") : Base(head, name) {}
+	void signal(string& mes){
+		mes += " (class: 3)";
+		cout << "Signal from " << this->getPath() << endl;
+	}
+	void handler(string mes){cout << "Signal to " << this->getPath() << " Text: " << mes << endl;}
 };
 class Child4 : public Base
 {
 public:
 	Child4(Base* head, string name = "Base_object") : Base(head, name) {}
+	void signal(string& mes){
+		mes += " (class: 4)";
+		cout << "Signal from " << this->getPath() << endl;
+	}
+	void handler(string mes){cout << "Signal to " << this->getPath() << " Text: " << mes << endl;}
 };
 class Child5 : public Base
 {
 public:
 	Child5(Base* head, string name = "Base_object") : Base(head, name) {}
+	void signal(string& mes){
+		mes += " (class: 5)";
+		cout << "Signal from " << this->getPath() << endl;
+	}
+	void handler(string mes){cout << "Signal to " << this->getPath() << " Text: " << mes << endl;}
 };
 class Child6 : public Base
 {
 public:
 	Child6(Base* head, string name = "Base_object") : Base(head, name) {}
+	void signal(string& mes){
+		mes += " (class: 6)";
+		cout << "Signal from " << this->getPath() << endl;
+	}
+	void handler(string mes){cout << "Signal to " << this->getPath() << " Text: " << mes << endl;}
 };
 
 
@@ -224,6 +285,11 @@ public:
 	bool buildTree();
 	void startApp();
 	void errorOut(string headPath);
+	void signal(string& mes){
+		mes += " (class: 1)";
+		cout << "Signal from " << this->getPath() << endl;
+	}
+	void handler(string mes){cout << "Signal to " << this->getPath() << " Text: " << mes << endl;}
 };
 
 void Application::errorOut(string headPath)
