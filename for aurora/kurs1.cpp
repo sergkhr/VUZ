@@ -353,7 +353,7 @@ void Base::delete_connection(TYPE_SIGNAL signal, Base* destination, TYPE_HANDLER
 			//cout <<"d";
 			delete outcomes[ind]; //don't know wheter only one or both delete and erase
 			this->outcomes.erase(outcomes.begin() + ind); //potential memory leak if left alone
-			cout << "test_delete_out";
+			//cout << "test_delete_out";
 		}
 		//check whether the overloaded operator == is working
 	}
