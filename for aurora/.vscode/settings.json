@@ -5,6 +5,9 @@
         "string": "cpp",
         "ostream": "cpp",
         "memory": "cpp",
-        "xstring": "cpp"
+        "xstring": "cpp",
+        "xutility": "cpp",
+        "vector": "cpp",
+        "initializer_list": "cpp"
     }
 }
