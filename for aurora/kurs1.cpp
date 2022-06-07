@@ -552,7 +552,6 @@ void Reader::insert(string& field)
 			field += tmp + "\n";
 		}
 	}
-	field;
 }
 
 
